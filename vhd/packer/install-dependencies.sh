@@ -82,7 +82,7 @@ echo "  - apmz $apmz_version" >> ${VHD_LOGS_FILEPATH}
 installBpftrace
 echo "  - bpftrace" >> ${VHD_LOGS_FILEPATH}
 
-MOBY_VERSION="19.03.14"
+MOBY_VERSION="20.10.7"
 CONTAINERD_VERSION="1.4.4"
 installMoby
 installRunc
@@ -226,7 +226,7 @@ loadContainerImage "busybox"
 echo "  - busybox" >> ${VHD_LOGS_FILEPATH}
 
 K8S_VERSIONS="
-1.22.0-alpha.1
+1.22.0-beta.1
 1.21.2
 1.20.8
 1.20.6-azs

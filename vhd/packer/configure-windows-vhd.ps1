@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 
 filter Timestamp { "$(Get-Date -Format o): $_" }
 
-$global:containerdPackageUrl = "https://mobyartifacts.azureedge.net/moby/moby-containerd/1.4.3+azure/windows/windows_amd64/moby-containerd-1.4.3+azure-1.amd64.zip"
+$global:containerdPackageUrl = "https://mobyartifacts.azureedge.net/moby/moby-containerd/1.4.6+azure/windows/windows_amd64/moby-containerd-1.4.6+azure-1.amd64.zip"
 
 function Write-Log($Message) {
     $msg = $message | Timestamp
@@ -106,7 +106,8 @@ function Get-FilesToCacheOnVHD {
             "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.10.zip",
             "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.11.zip",
             "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.12.zip",
-            "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.13.zip"
+            "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.13.zip",
+            "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.14.zip"
         );
         "c:\akse-cache\containerd\"   = @(
             $global:containerdPackageUrl
@@ -122,7 +123,7 @@ function Get-FilesToCacheOnVHD {
             "https://kubernetesartifacts.azureedge.net/kubernetes/v1.19.12/windowszip/v1.19.12-1int.zip",
             "https://kubernetesartifacts.azureedge.net/kubernetes/v1.20.8/windowszip/v1.20.8-1int.zip",
             "https://kubernetesartifacts.azureedge.net/kubernetes/v1.21.2/windowszip/v1.21.2-1int.zip",
-            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.22.0-alpha.1/windowszip/v1.22.0-alpha.1-1int.zip"
+            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.22.0-beta.1/windowszip/v1.22.0-beta.1-1int.zip"
         );
         "c:\akse-cache\win-vnet-cni\" = @(
             "https://kubernetesartifacts.azureedge.net/azure-cni/v1.2.2/binaries/azure-vnet-cni-singletenancy-windows-amd64-v1.2.2.zip",
@@ -174,7 +175,7 @@ function Install-ContainerD {
 }
 
 function Install-Docker {
-    $defaultDockerVersion = "20.10.5"
+    $defaultDockerVersion = "20.10.6"
 
     Write-Log "Attempting to install Docker version $defaultDockerVersion"
     Install-PackageProvider -Name DockerMsftProvider -Force -ForceBootstrap | Out-Null
@@ -200,7 +201,9 @@ function Install-WindowsPatches {
             # then you can get download links by searching for specific KBs at http://www.catalog.update.microsoft.com/home.aspx
 
             # Find a specific patch at https://www.catalog.update.microsoft.com/Search.aspx?q=<KB-number>
-            $patchUrls = @()
+            # Cumulative updates for WS 2019 from July 13, 2021 
+            # https://www.catalog.update.microsoft.com/Search.aspx?q=KB5004244
+            $patchUrls = @("http://download.windowsupdate.com/d/msdownload/update/software/secu/2021/07/windows10.0-kb5004244-x64_5685623313a6de061e0c42fed3391c29750a6b1b.msu")
         }
         '2004' {
             # Windows Server, Version 2004 update history can be found at https://support.microsoft.com/en-us/help/4555932

@@ -1275,7 +1275,7 @@ func TestAzureStackKubernetesConfigDefaults(t *testing.T) {
 
 func TestContainerRuntime(t *testing.T) {
 
-	for _, mobyVersion := range []string{"3.0.1", "3.0.3", "3.0.4", "3.0.5", "3.0.6", "3.0.7", "3.0.8", "3.0.10", "19.03.11", "19.03.12", "19.03.13", "19.03.14", "20.10.5"} {
+	for _, mobyVersion := range []string{"3.0.1", "3.0.3", "3.0.4", "3.0.5", "3.0.6", "3.0.7", "3.0.8", "3.0.10", "19.03.11", "19.03.12", "19.03.13", "19.03.14", "20.10.5", "20.10.7"} {
 		mockCS := getMockBaseContainerService("1.10.13")
 		properties := mockCS.Properties
 		properties.OrchestratorProfile.KubernetesConfig.MobyVersion = mobyVersion
@@ -3233,6 +3233,7 @@ func TestWindowsProfileDefaults(t *testing.T) {
 				ImageVersion:                  AKSWindowsServer2019OSImageConfig.ImageVersion,
 				WindowsPauseImageURL:          DefaultKubernetesSpecConfig.WindowsPauseImageURL,
 				AlwaysPullWindowsPauseImage:   &trueVar,
+				WindowsSecureTLSEnabled:       &falseVar,
 			},
 			WindowsProfile{
 				ProvisioningScriptsPackageURL: DefaultKubernetesSpecConfig.WindowsProvisioningScriptsPackageURL,
@@ -3247,6 +3248,63 @@ func TestWindowsProfileDefaults(t *testing.T) {
 				SSHEnabled:                    nil,
 				WindowsPauseImageURL:          DefaultKubernetesSpecConfig.WindowsPauseImageURL,
 				AlwaysPullWindowsPauseImage:   &trueVar,
+				WindowsSecureTLSEnabled:       &falseVar,
+			},
+			false,
+			true,
+			false,
+			Docker,
+		},
+		{
+			"aks-engine does not override WindowsSecureTLSEnabled during create",
+			WindowsProfile{
+				WindowsSecureTLSEnabled: &trueVar,
+			},
+			WindowsProfile{
+				ProvisioningScriptsPackageURL: DefaultKubernetesSpecConfig.WindowsProvisioningScriptsPackageURL,
+				WindowsPublisher:              AKSWindowsServer2019OSImageConfig.ImagePublisher,
+				WindowsOffer:                  AKSWindowsServer2019OSImageConfig.ImageOffer,
+				WindowsSku:                    AKSWindowsServer2019OSImageConfig.ImageSku,
+				ImageVersion:                  AKSWindowsServer2019OSImageConfig.ImageVersion,
+				AdminUsername:                 "",
+				AdminPassword:                 "",
+				WindowsImageSourceURL:         "",
+				WindowsDockerVersion:          "",
+				SSHEnabled:                    &trueVar,
+				WindowsPauseImageURL:          DefaultKubernetesSpecConfig.WindowsPauseImageURL,
+				AlwaysPullWindowsPauseImage:   &falseVar,
+				WindowsSecureTLSEnabled:       &trueVar,
+			},
+			false,
+			false,
+			false,
+			Docker,
+		},
+		{
+			"aks-engine does not override WindowsSecureTLSEnabled during upgrade",
+			WindowsProfile{
+				ProvisioningScriptsPackageURL: DefaultKubernetesSpecConfig.WindowsProvisioningScriptsPackageURL,
+				WindowsPublisher:              AKSWindowsServer2019OSImageConfig.ImagePublisher,
+				WindowsOffer:                  AKSWindowsServer2019OSImageConfig.ImageOffer,
+				WindowsSku:                    AKSWindowsServer2019OSImageConfig.ImageSku,
+				ImageVersion:                  AKSWindowsServer2019OSImageConfig.ImageVersion,
+				WindowsPauseImageURL:          DefaultKubernetesSpecConfig.WindowsPauseImageURL,
+				WindowsSecureTLSEnabled:       &trueVar,
+			},
+			WindowsProfile{
+				ProvisioningScriptsPackageURL: DefaultKubernetesSpecConfig.WindowsProvisioningScriptsPackageURL,
+				WindowsPublisher:              AKSWindowsServer2019OSImageConfig.ImagePublisher,
+				WindowsOffer:                  AKSWindowsServer2019OSImageConfig.ImageOffer,
+				WindowsSku:                    AKSWindowsServer2019OSImageConfig.ImageSku,
+				ImageVersion:                  AKSWindowsServer2019OSImageConfig.ImageVersion,
+				AdminUsername:                 "",
+				AdminPassword:                 "",
+				WindowsImageSourceURL:         "",
+				WindowsDockerVersion:          "",
+				SSHEnabled:                    nil,
+				WindowsPauseImageURL:          DefaultKubernetesSpecConfig.WindowsPauseImageURL,
+				AlwaysPullWindowsPauseImage:   &falseVar,
+				WindowsSecureTLSEnabled:       &trueVar,
 			},
 			false,
 			true,
@@ -5968,10 +6026,10 @@ func ExampleContainerService_setOrchestratorDefaults() {
 	mockCS.setOrchestratorDefaults(false, false)
 
 	// Output:
-	// level=warning msg="Moby will be upgraded to version 19.03.14\n"
-	// level=warning msg="containerd will be upgraded to version 1.4.4\n"
-	// level=warning msg="Any new nodes will have Moby version 19.03.14\n"
-	// level=warning msg="Any new nodes will have containerd version 1.4.4\n"
+	// level=warning msg="Moby will be upgraded to version 20.10.7\n"
+	// level=warning msg="containerd will be upgraded to version 1.4.6\n"
+	// level=warning msg="Any new nodes will have Moby version 20.10.7\n"
+	// level=warning msg="Any new nodes will have containerd version 1.4.6\n"
 }
 
 func TestCombineValues(t *testing.T) {
