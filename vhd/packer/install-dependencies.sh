@@ -83,7 +83,7 @@ installBpftrace
 echo "  - bpftrace" >> ${VHD_LOGS_FILEPATH}
 
 MOBY_VERSION="20.10.7"
-CONTAINERD_VERSION="1.4.4"
+CONTAINERD_VERSION="1.4.6"
 installMoby
 installRunc
 systemctl_restart 100 5 30 docker || exit 1
@@ -226,12 +226,11 @@ loadContainerImage "busybox"
 echo "  - busybox" >> ${VHD_LOGS_FILEPATH}
 
 K8S_VERSIONS="
-1.22.0-beta.1
-1.21.2
-1.20.8
+1.22.0-beta.2
+1.21.3
+1.20.9
 1.20.6-azs
-1.19.12
-1.19.11
+1.19.13
 1.19.10-azs
 1.18.20
 1.18.18-azs
