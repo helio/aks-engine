@@ -255,6 +255,13 @@ try
         Initialize-DataDirectories
 
         New-Item -ItemType Directory -Path "c:\k" -Force | Out-Null
+        icacls.exe "c:\k" /inheritance:r
+        icacls.exe "c:\k" /grant:r SYSTEM:`(OI`)`(CI`)`(F`)
+        icacls.exe "c:\k" /grant:r BUILTIN\Administrators:`(OI`)`(CI`)`(F`)
+        icacls.exe "c:\k" /grant:r BUILTIN\Users:`(OI`)`(CI`)`(RX`)
+        Write-Log "c:\k permissions: "
+        icacls.exe "c:\k"
+
         Get-ProvisioningScripts
 
         Write-KubeClusterConfig -MasterIP $MasterIP -KubeDnsServiceIp $KubeDnsServiceIp
@@ -440,6 +447,44 @@ try
         Register-LogsCleanupScriptTask
         Register-NodeResetScriptTask
         Update-DefenderPreferences
+
+        {{if IsAzureStackCloud}}
+            {{if UseCloudControllerManager}}
+            # Export the Azure Stack root cert for use in cloud node manager container setup.
+            $azsConfigFile = [io.path]::Combine($global:KubeDir, "azurestackcloud.json")
+            if (Test-Path -Path $azsConfigFile) {
+                $azsJson = Get-Content -Raw -Path $azsConfigFile | ConvertFrom-Json
+                if (-not [string]::IsNullOrEmpty($azsJson.managementPortalURL)) {
+                    $azsARMUri = [System.Uri]$azsJson.managementPortalURL
+                    $azsRootCert = Get-ChildItem -Path Cert:\LocalMachine\Root | Where-Object {$_.DnsNameList -contains $azsARMUri.Host.Substring($azsARMUri.Host.IndexOf(".")).TrimStart(".")}
+                    if ($null -ne $azsRootCert) {
+                        $azsRootCertFilePath =  [io.path]::Combine($global:KubeDir, "azsroot.cer")
+                        Export-Certificate -Cert $azsRootCert -FilePath $azsRootCertFilePath -Type CERT
+                    } else {
+                        throw "$azsRootCert is null, cannot export Azure Stack root cert"
+                    }
+                } else {
+                    throw "managementPortalURL is null or empty in $azsConfigFile, cannot get Azure Stack ARM uri"
+                }
+            } else {
+                throw "$azsConfigFile does not exist, cannot export Azure Stack root cert"
+            }
+
+            # Copy certoc tool for use in cloud node manager container setup. [Environment]::SystemDirectory
+            $certocSourcePath = [io.path]::Combine([Environment]::SystemDirectory, "certoc.exe")
+            if (Test-Path -Path $certocSourcePath) {
+                Copy-Item -Path $certocSourcePath -Destination $global:KubeDir
+            }
+
+            # Create add cert script
+            $addRootCertFile = [io.path]::Combine($global:KubeDir, "addazsroot.bat")
+            if ($null -ne $azsRootCert) {
+                [io.file]::WriteAllText($addRootCertFile, "${global:KubeDir}\certoc.exe -addstore root ${azsRootCertFilePath}")
+            } else {
+                throw "$azsRootCertFilePath is null, cannot create add cert script"
+            }
+            {{end}}
+        {{end}}
 
         if (Test-Path $CacheDir)
         {

@@ -107,7 +107,8 @@ function Get-FilesToCacheOnVHD {
             "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.11.zip",
             "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.12.zip",
             "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.13.zip",
-            "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.14.zip"
+            "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.14.zip",
+            "https://kubernetesartifacts.azureedge.net/aks-engine/windows/provisioning/signedscripts-v0.0.15.zip"
         );
         "c:\akse-cache\containerd\"   = @(
             $global:containerdPackageUrl
@@ -120,17 +121,15 @@ function Get-FilesToCacheOnVHD {
             "https://kubernetesartifacts.azureedge.net/kubernetes/v1.19.10-azs/windowszip/v1.19.10-azs-1int.zip",
             "https://kubernetesartifacts.azureedge.net/kubernetes/v1.20.6-azs/windowszip/v1.20.6-azs-1int.zip",
             "https://kubernetesartifacts.azureedge.net/kubernetes/v1.18.20/windowszip/v1.18.20-1int.zip",
-            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.19.13/windowszip/v1.19.13-1int.zip",
-            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.20.9/windowszip/v1.20.9-1int.zip",
-            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.21.3/windowszip/v1.21.3-1int.zip",
-            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.22.0-beta.2/windowszip/v1.22.0-beta.2-1int.zip"
+            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.19.14/windowszip/v1.19.14-1int.zip",
+            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.20.10/windowszip/v1.20.10-1int.zip",
+            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.21.4/windowszip/v1.21.4-1int.zip",
+            "https://kubernetesartifacts.azureedge.net/kubernetes/v1.22.1/windowszip/v1.22.1-1int.zip"
         );
         "c:\akse-cache\win-vnet-cni\" = @(
-            "https://kubernetesartifacts.azureedge.net/azure-cni/v1.2.2/binaries/azure-vnet-cni-singletenancy-windows-amd64-v1.2.2.zip",
             "https://kubernetesartifacts.azureedge.net/azure-cni/v1.2.7/binaries/azure-vnet-cni-singletenancy-windows-amd64-v1.2.7.zip",
-            "https://kubernetesartifacts.azureedge.net/azure-cni/v1.4.0/binaries/azure-vnet-cni-singletenancy-windows-amd64-v1.4.0.zip"
-
-
+            "https://kubernetesartifacts.azureedge.net/azure-cni/v1.4.0/binaries/azure-vnet-cni-singletenancy-windows-amd64-v1.4.0.zip",
+            "https://kubernetesartifacts.azureedge.net/azure-cni/v1.4.9/binaries/azure-vnet-cni-singletenancy-windows-amd64-v1.4.9.zip"
         )
     }
 
